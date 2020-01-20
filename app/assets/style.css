@@ -1,0 +1,45 @@
+.center {
+  margin: auto;
+  width: 1150px;
+  padding: 0px;
+  font-family: "Arial";
+}
+
+.small-graphs-containers {
+  float:left;
+}
+._dash-undo-redo {
+  display: none;
+}
+
+#description {
+  text-align: center;
+}
+
+#overview {
+  margin: auto;
+  width: 900px;
+  height: 350px;
+}
+
+#iterations {
+  width: 380px;
+  height: 295px;
+  margin: 0px;
+}
+
+#residuals {
+  width: 380px;
+  height: 295px;
+  margin: 0px;
+}
+
+#mesh {
+  width: 370px;
+  height: 295px;
+  margin: 0px;
+}
+
+.headline {
+  text-align: center;
+}
