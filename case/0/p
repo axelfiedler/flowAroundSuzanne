@@ -33,10 +33,6 @@ boundaryField
     {
         type            zeroGradient;
     }
-    monkeyBack
-    {
-        type            zeroGradient;
-    }
     side
     {
         type            zeroGradient;

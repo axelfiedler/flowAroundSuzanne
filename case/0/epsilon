@@ -1,45 +1,47 @@
 /*--------------------------------*- C++ -*----------------------------------*\
 | =========                 |                                                 |
 | \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  5.x                                   |
-|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|  \\    /   O peration     | Version:  plus                                  |
+|   \\  /    A nd           | Web:      www.OpenFOAM.com                      |
 |    \\/     M anipulation  |                                                 |
 \*---------------------------------------------------------------------------*/
 FoamFile
 {
     version     2.0;
-    format      binary;
-    class       volVectorField;
+    format      ascii;
+    class       volScalarField;
     location    "0";
-    object      U;
+    object      epsilon;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [0 1 -1 0 0 0 0];
+dimensions      [0 2 -3 0 0 0 0];
 
-internalField   uniform (0 0 0);
+internalField           uniform 0.165687474366; 
 
 boundaryField
 {
     inlet
     {
         type            fixedValue;
-        value           uniform (0 0.627791569087 0); 
+        value      		uniform 0.165687474366; 
     }
+	
     outlet
     {
-        type            inletOutlet;
-        inletValue      uniform (0 0 0);
-        value           uniform (0 0 0);
+        type            zeroGradient;
     }
-    monkey
+    
+	monkey
     {
-        type            noSlip;
+        type            epsilonWallFunction;
+        value      		uniform 0.165687474366; 
     }
+	
     side
-    {
-        type            slip;
-    }
+	{
+		type			slip;
+	}
 }
 
 
