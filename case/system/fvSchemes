@@ -23,13 +23,16 @@ ddtSchemes
 gradSchemes
 {
     default         Gauss linear;
+    grad(U)         cellLimited Gauss linear 1;
 }
 
 divSchemes
 {
     default         none;
     div(phi,U)      bounded Gauss linearUpwindV grad(U);
-
+    div(phi,k)      bounded Gauss upwind;
+    div(phi,epsilon) bounded Gauss upwind;
+    div(phi,omega)  bounded Gauss upwind;
     div((nuEff*dev2(T(grad(U))))) Gauss linear;
 }
 
@@ -47,6 +50,11 @@ snGradSchemes
 {
     // Korrigiert für Non-Orthogonalität
     default         corrected;
+}
+
+wallDist
+{
+    method meshWave;
 }
 
 
