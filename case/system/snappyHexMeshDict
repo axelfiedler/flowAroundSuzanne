@@ -29,15 +29,10 @@ addLayers       false;
 // - to 'snap' the mesh boundary to the surface
 geometry
 {
-    suzanne_scaled.stl
+    suzanne_wt.stl
     {
         type triSurfaceMesh;
         name monkey;
-    }
-    ears_scaled.stl
-    {
-        type triSurfaceMesh;
-        name monkeyBack;
     }
 };
 
@@ -97,13 +92,9 @@ castellatedMeshControls
 
     refinementSurfaces
     {
-        monkey
+        monkey 
         {
             level (3 5);
-        }
-        monkeyBack
-        {
-            level (3 4);
         }
     }
 
@@ -137,7 +128,7 @@ castellatedMeshControls
     // NOTE: This point should never be on a face, always inside a cell, even
     // after refinement.
     // This is an outside point locationInMesh (-0.033 -0.033 0.0033);
-    locationInMesh (0.00 0.7 0.00); // Inside point
+    locationInMesh (0.0 0.74 0.0); // Inside point
 
     // Whether any faceZones (as specified in the refinementSurfaces)
     // are only on the boundary of corresponding cellZones or also allow
