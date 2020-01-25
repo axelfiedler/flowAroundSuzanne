@@ -1,6 +1,6 @@
 .center {
   margin: auto;
-  width: 1150px;
+  width: 1400px;
   padding: 0px;
   font-family: "Arial";
 }
@@ -18,24 +18,24 @@
 
 #overview {
   margin: auto;
-  width: 900px;
+  width: 1000px;
   height: 350px;
 }
 
 #iterations {
-  width: 380px;
+  width: 450px;
   height: 295px;
   margin: 0px;
 }
 
 #residuals {
-  width: 380px;
+  width: 450px;
   height: 295px;
   margin: 0px;
 }
 
 #mesh {
-  width: 370px;
+  width: 450px;
   height: 295px;
   margin: 0px;
 }
