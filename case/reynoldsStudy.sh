@@ -3,9 +3,9 @@
 # Contributor: Axel Fiedler
 # Updated on: 20.01.2020
 
-echo -e "This script will run a Reynolds number study of a flow around Suzanne"
+echo -e "This script will run a Reynolds number study of a flow around Suzanne\n"
 
-for Re in {1000..8000..1000}
+for Re in {500..1100..100}
 do
 	echo -e "Re: $Re"
 
@@ -14,7 +14,6 @@ do
 	rm -r 0.* 1* 2* 3* 4* 5* 6* 7* 8* 9*
 	rm log*
 	rm 0/cellLevel 0/pointLevel
-	rm -r postProcessing/forces postProcessing/residuals
 
 	echo -e "\nSet magUInf.\n"
 	sed -i "78s/.*/        magUInf     $(python -c "Re=$Re; nu=0.00001; Dhyd=4*0.02562 / 0.804201; U=Re*nu/Dhyd; print U;"); /" system/controlDict
@@ -48,25 +47,43 @@ do
 	mpirun -np 4 renumberMesh -overwrite -parallel >> logSimpleFoam
 	renumberMesh >> logSimpleFoam
 
+	FACENO=$(sed -n 19p constant/polyMesh/faces)
+	SIMTYPE=$(sed -n 18p constant/turbulenceProperties)
+	if [[ $SIMTYPE == *"RAS"* ]]; then
+  	TURB=$(sed -n 22p constant/turbulenceProperties)
+		if [[ $TURB == *"kEpsilon"* ]]; then
+			TURB="kEpsilon"
+		else
+			TURB="kOmega"
+		fi
+	else
+		TURB="laminar"
+	fi
+
+	echo -e "${TURB} simulation on mesh with ${FACENO} faces.\n"
+
 	echo -e "Run simpleFoam in parallel.\n"
 	mpirun -np 4 simpleFoam -parallel >> logSimpleFoam
 
 	echo -e "Reconstruct case.\n"
 	reconstructPar >> logSimpleFoam
 
-	echo -e "Copy results into C_D folder.\n"
+	echo -e "Copy results into forces folder.\n"
+	mkdir "forces_${TURB}_${FACENO}"
 	cd postProcessing/forces/*/.
-	cp forceCoeffs.dat ../../../C_D/
+	cp forceCoeffs.dat "../../../forces_${TURB}_${FACENO}/"
 	cd ../../..
 	rm -r postProcessing/forces/
-	mv "C_D/forceCoeffs.dat" "C_D/Re_${Re}.dat"
+
+	mv "forces/forceCoeffs.dat" "forces_${TURB}_${FACENO}/Re_${Re}.dat"
 
 	echo -e "Copy residuals into residuals folder.\n"
+	mkdir "residuals_${TURB}_${FACENO}"
 	cd postProcessing/residuals/*/.
-	cp residuals.dat ../../../residuals/
+	cp residuals.dat "../../../residuals_${TURB}_${FACENO}/"
 	cd ../../..
 	rm -r postProcessing/residuals/
-	mv "residuals/residuals.dat" "residuals/Re_${Re}.dat"
+	mv "residuals/residuals.dat" "residuals_${TURB}_${FACENO}/Re_${Re}.dat"
 	rm -r postProcessing
 
 	echo -e "Calculation done.\n"
