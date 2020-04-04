@@ -178,10 +178,22 @@ selected_force = 'Cd'
 updateResultDicts(selected_force)
 
 app.layout = html.Div([
-    html.H1(children="Flow around Blender\'s Suzanne",className='headline'),
-    html.Div(
-    id="description",
-    children="Shows the results of a simpleFoam calculation to estimate the drag coefficient of Blender\'s Suzanne. Click on a point in upper graph to update graphs below."),
+    html.Div([
+        html.A([
+            html.Div(id="logo")
+        ],href='https://github.com/axelfiedler/ipost'),
+        html.Div(
+        id="description",
+        children="This is an example of how to use Plotly Dash to generate interactive \
+        plots of OpenFOAM simulation results. Shown here is the calculation to estimate \
+        the drag coefficient of a flow around a monkey head using simpleFoam. Click on \
+        a point in upper graph to update graphs below. For more information on the \
+        problem setup click on the monkey head on the right."),
+        html.A([
+            html.Div(id="monkey")
+        ],href='https://www.youtube.com/watch?v=lBG3qphtofE')
+    ],
+    id="navbar"),
     # Each plot is inside a DIV
     html.Div([
         dcc.Graph(

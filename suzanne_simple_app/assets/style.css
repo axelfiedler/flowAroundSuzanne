@@ -1,6 +1,6 @@
 .center {
   margin: auto;
-  width: 1400px;
+  width: 100%;
   padding: 0px;
   font-family: "Arial";
 }
@@ -12,8 +12,32 @@
   display: none;
 }
 
+#navbar {
+  height: 100px;
+  margin-bottom: 20px;
+  box-shadow: rgba(100, 100, 100, 0.1) 0px 10px 10px 0px;
+}
+
+#logo {
+  width: 180px;
+  margin-left: 20px;
+  margin-right: 70px;
+  float: left;
+  content: url("ipost_logo.png");
+}
+
 #description {
-  text-align: center;
+  width: 900px;
+  height: 100px;
+  float: left;
+  margin: 20px;
+}
+
+#monkey {
+  content: url("suzanne.png");
+  height: 90px;
+  margin-right: 30px;
+  float: right;
 }
 
 #overview {
