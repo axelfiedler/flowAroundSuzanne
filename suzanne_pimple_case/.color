@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+#----------------------------------------------#
+# Contributor: Tobias Holzmann                 #
+# Updated on:  15 September 2018               #
+#----------------------------------------------#
+# Location:    www.Holzmann-cfd.de             #
+# Email:       Tobias.Holzmann@Holzmann-cfd.de #
+#----------------------------------------------#
+
+
+# Color definition for some bash highlight manipulation
+#------------------------------------------------------------------------------
+RED='\e[0;31m'
+GREEN='\e[0;32m'
+NC='\e[0m'
+ORANGE='\033[0;33m'
+GRAY='\e[0;37m'
+FL='\033[0;36m'
+
+
+#------------------------------------------------------------------------------

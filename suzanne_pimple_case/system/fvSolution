@@ -1,0 +1,125 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  4.x                                   |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solvers
+{
+    pcorrFinal
+    {
+    solver GAMG;
+    tolerance 0.1;
+    relTol 0;
+    smoother GaussSeidel;
+    nPreSweeps 0;
+    nPostSweeps 2;
+    cacheAgglomeration no;
+    nCellsInCoarsestLevel 10;
+    agglomerator faceAreaPair;
+    mergeLevels 1;
+    }
+
+    p
+    {
+    solver GAMG;
+    tolerance 1e-6;
+    relTol 0.02;
+    smoother GaussSeidel;
+    nPreSweeps 0;
+    nPostSweeps 2;
+    cacheAgglomeration no;
+    nCellsInCoarsestLevel 10;
+    agglomerator faceAreaPair;
+    mergeLevels 1;
+    }
+
+    pFinal
+    {
+    $p;
+    tolerance 1e-06;
+    relTol 0;
+    }
+
+    U
+    {
+    solver smoothSolver;
+    smoother symGaussSeidel;
+    tolerance 1e-05;
+    relTol 0.1;
+    }
+
+    "(U|k|omega)"
+    {
+        solver          smoothSolver;
+        smoother        symGaussSeidel;
+        tolerance       1e-06;
+        relTol          0.1;
+    }
+
+    "(U|k|omega)Final"
+    {
+        $U;
+        tolerance       1e-06;
+        relTol          0;
+    }
+
+    cellDisplacement
+    {
+        solver          GAMG;
+        tolerance       1e-5;
+        relTol          0;
+        smoother        GaussSeidel;
+        cacheAgglomeration true;
+        nCellsInCoarsestLevel 10;
+        agglomerator    faceAreaPair;
+        mergeLevels     1;
+    }
+}
+
+PIMPLE
+{
+    nOuterCorrectors    50;
+    nCorrectors         2;
+    nNonOrthogonalCorrectors 0;
+    outerCorrectorResidualControl
+    {
+        U
+        {
+            relTol          0;
+            tolerance       1e-5;
+        }
+        p
+        {
+          relTol            0;
+          tolerance         1e-3;
+        }
+    }
+}
+
+relaxationFactors
+{
+    fields
+    {
+        p               0.7;
+        pFinal          1.0;
+    }
+    equations
+    {
+        "(U|k|S|omega)"   0.8;
+        "(U|k|S|omega)Final" 1.0;
+    }
+}
+
+
+// ************************************************************************* //
