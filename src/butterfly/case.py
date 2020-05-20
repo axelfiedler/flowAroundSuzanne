@@ -48,13 +48,6 @@ from .functions import Probes
 from .decomposeParDict import DecomposeParDict
 from .sampleDict import SampleDict
 
-import butterfly
-
-if butterfly.config['runner'] == 'blueCFD':
-    from .runmanager_bluecfd import RunManagerBlueCFD as RunManager
-else:
-    from .runmanager import RunManager
-
 
 class Case(object):
     """

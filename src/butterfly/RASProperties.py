@@ -3,7 +3,7 @@
 
 Use turbulenceProperties from Version 3.0+
 """
-from foamfile import FoamFile, foam_file_from_file
+from .foamfile import FoamFile, foam_file_from_file
 from collections import OrderedDict
 
 

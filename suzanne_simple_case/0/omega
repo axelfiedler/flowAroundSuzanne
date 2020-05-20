@@ -10,20 +10,21 @@ FoamFile
     version     2.0;
     format      ascii;
     class       volScalarField;
+    location    "0";
     object      omega;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 dimensions      [0 0 -1 0 0 0 0];
 
-internalField           uniform 112.105637337; 
+internalField           uniform 112.105637337;
 
 boundaryField
 {
     inlet
     {
         type            fixedValue;
-        value      		uniform 112.105637337; 
+        value      		uniform 112.105637337;
     }
 
     outlet
@@ -34,9 +35,9 @@ boundaryField
     monkey
     {
         type            omegaWallFunction;
-        value      		uniform 112.105637337; 
+        value      		uniform 112.105637337;
     }
-	
+
 	side
 	{
 		type			slip;

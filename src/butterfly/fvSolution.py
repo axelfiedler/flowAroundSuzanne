@@ -1,6 +1,6 @@
 # coding=utf-8
 """Finite Volume Solution class."""
-from foamfile import FoamFile, foam_file_from_file
+from .foamfile import FoamFile, foam_file_from_file
 from collections import OrderedDict
 
 

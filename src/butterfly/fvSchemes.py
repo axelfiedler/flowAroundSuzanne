@@ -1,7 +1,7 @@
 # coding=utf-8
 """Finite Volume Schemes class."""
-from version import Version
-from foamfile import FoamFile, foam_file_from_file
+from .version import Version
+from .foamfile import FoamFile, foam_file_from_file
 from collections import OrderedDict
 
 

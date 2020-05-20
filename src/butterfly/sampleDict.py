@@ -1,6 +1,6 @@
 # coding=utf-8
 """sampleDict class."""
-from foamfile import Condition, foam_file_from_file
+from .foamfile import Condition, foam_file_from_file
 from collections import OrderedDict
 
 

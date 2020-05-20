@@ -1,6 +1,6 @@
 # coding=utf-8
 """p_rgh class."""
-from foamfile import FoamFileZeroFolder, foam_file_from_file
+from .foamfile import FoamFileZeroFolder, foam_file_from_file
 from collections import OrderedDict
 
 

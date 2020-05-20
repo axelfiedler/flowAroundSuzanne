@@ -2,7 +2,7 @@
 """Collection of OpenFOAM boundary conditions (e.g. wall, inlet, outlet)."""
 from copy import deepcopy
 from collections import OrderedDict
-from fields import AtmBoundaryLayerInletVelocity, AtmBoundaryLayerInletK, \
+from .fields import AtmBoundaryLayerInletVelocity, AtmBoundaryLayerInletK, \
     AtmBoundaryLayerInletEpsilon, Calculated, EpsilonWallFunction, FixedValue, \
     InletOutlet, KqRWallFunction, NutkWallFunction, NutkAtmRoughWallFunction, \
     Slip, ZeroGradient, AlphatJayatillekeWallFunction, FixedFluxPressure, Empty, \

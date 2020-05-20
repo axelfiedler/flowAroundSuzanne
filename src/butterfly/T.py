@@ -1,6 +1,6 @@
 # coding=utf-8
 """T[emperature] class."""
-from foamfile import FoamFileZeroFolder, foam_file_from_file
+from .foamfile import FoamFileZeroFolder, foam_file_from_file
 from collections import OrderedDict
 
 

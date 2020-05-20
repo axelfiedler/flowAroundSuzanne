@@ -2,7 +2,7 @@
 """BlockMeshDict class."""
 from .boundarycondition import BoundingBoxBoundaryCondition, EmptyBoundaryCondition
 from .foamfile import FoamFile
-import vectormath
+from .vectormath import *
 from .grading import SimpleGrading, Grading, MultiGrading
 from .parser import CppDictParser
 from .geometry import BFGeometry

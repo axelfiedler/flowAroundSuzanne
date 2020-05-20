@@ -1,6 +1,6 @@
 # coding=utf-8
 """U class."""
-from foamfile import FoamFileZeroFolder, foam_file_from_file
+from .foamfile import FoamFileZeroFolder, foam_file_from_file
 from collections import OrderedDict
 
 

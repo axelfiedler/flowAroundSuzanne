@@ -1,4 +1,4 @@
-from types import Solid, Vector3d, Facet
+from .types import Solid, Vector3d, Facet
 
 
 class KeywordToken(str):
