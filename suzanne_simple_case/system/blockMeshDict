@@ -14,7 +14,7 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-scale   1;
+convertToMeters   1;
 
 vertices
 (
@@ -47,7 +47,7 @@ boundary
 			(0 1 5 4)
 		);
 	}
-	
+
 	outlet
 	{
 		type patch;
@@ -56,7 +56,7 @@ boundary
 			(2 3 7 6)
 		);
 	}
-	
+
 	side
 	{
 		type patch;

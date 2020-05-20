@@ -74,8 +74,8 @@ class Case(object):
 
     """
 
-    SUBFOLDERS = ('0', 'constant', 'constant\\polyMesh',
-                  'constant\\triSurface', 'system', 'log')
+    SUBFOLDERS = ('0', 'constant', 'constant/polyMesh',
+                  'constant/triSurface', 'system', 'log')
 
     # minimum list of files to be able to run blockMesh and snappyHexMesh
     MINFOAMFIles = ('fvSchemes', 'fvSolution', 'controlDict', 'blockMeshDict',
@@ -124,10 +124,9 @@ class Case(object):
         # place holder for refinment regions
         # use .add_refinementRegions to add regions to case
         self.__refinementRegions = []
-        self.runmanager = RunManager(self.project_name)
 
     @classmethod
-    def from_folder(cls, path, name=None, convert_from_meters=1):
+    def from_folder(cls, path, name=None, convert_from_meters=1, import_geometry=False):
         """Create a Butterfly case from a case folder.
 
         Args:
@@ -159,7 +158,7 @@ class Case(object):
                     print('Failed to import {}:\n\t{}'.format(p, e))
         s_hmd = cls.__get_foam_file_by_name('snappyHexMeshDict', ff)
 
-        if s_hmd:
+        if s_hmd and import_geometry == True:
             s_hmd.project_name = name
 
             stlfiles = tuple(f for f in _files.stl if f.lower().endswith('.stl'))
@@ -404,12 +403,12 @@ class Case(object):
     @property
     def polyMesh_folder(self):
         """polyMesh folder fullpath."""
-        return os.path.join(self.project_dir, 'constant\\polyMesh')
+        return os.path.join(self.project_dir, 'constant/polyMesh')
 
     @property
     def triSurface_folder(self):
         """triSurface folder fullpath."""
-        return os.path.join(self.project_dir, 'constant\\triSurface')
+        return os.path.join(self.project_dir, 'constant/triSurface')
 
     @property
     def postProcessing_folder(self):
@@ -692,7 +691,7 @@ class Case(object):
 
         # find blockMeshDict and convertToMeters so I can scale stl files to meters.
         bmds = (ff for ff in self.foam_files if ff.name == 'blockMeshDict')
-        bmd = bmds.next()
+        bmd = next(bmds)
         convertToMeters = bmd.convertToMeters
 
         # write bfgeometries to stl file. __geometries is geometries without
@@ -710,60 +709,9 @@ class Case(object):
         # add .foam file
         with open(os.path.join(self.project_dir,
                                self.project_name + '.foam'), 'wb') as ffile:
-            ffile.write('')
+            ffile.write(b'')
 
         print('{} is saved to: {}'.format(self.project_name, self.project_dir))
-
-    def command(self, cmd, args=None, decomposeParDict=None, run=True, wait=True):
-        r"""Run an OpenFOAM command for this case.
-        This method creates a log and err file under logFolder for each command.
-        The output will be logged as {cmd}.log and {cmd}.err.
-        Args:
-            cmd: OpenFOAM command.
-            args: Command arguments.
-            decomposeParDict: Optional input for decomposeParDict to run analysis
-                in parallel if desired.
-            run: Run the command in shell.
-            wait: Wait until the command is over.
-        returns:
-            If run is True returns a namedtuple for
-                (success, error, process, logfiles, errorfiles).
-                success: as a boolen.
-                error: None in case of success otherwise the error message as
-                    a string.
-                process: Popen process.
-                logfiles: List of fullpath to log files.
-                errorfiles: List of fullpath to error files.
-            else return a namedtuple for
-                (cmd, logfiles, errorfiles)
-                cmd: command lines.
-                logfiles: A tuple for log files.
-                errorfiles: A tuple for error files.
-        """
-        if not run:
-            cmdlog = self.runmanager.command(cmd, args, decomposeParDict)
-            return cmdlog
-        else:
-            log = namedtuple('log', 'success error process logfiles errorfiles')
-
-            p, logfiles, errfiles = self.runmanager.run(cmd, args,
-                                                        decomposeParDict, wait)
-
-            logfiles = tuple(os.path.normpath(os.path.join(self.project_dir, f))
-                             for f in logfiles)
-
-            errfiles = tuple(os.path.normpath(os.path.join(self.project_dir, f))
-                             for f in errfiles)
-
-            # check error files and raise and error
-            if wait:
-                self.runmanager.check_file_contents(logfiles, mute=False)
-                hascontent, content = self.runmanager.check_file_contents(errfiles)
-
-                return log(not hascontent, content, p, logfiles, errfiles)
-            else:
-                # return a namedtuple assuming that the command is running fine.
-                return log(True, None, p, logfiles, errfiles)
 
     def blockMesh(self, args=None, wait=True, overwrite=True,):
         """Run blockMesh.

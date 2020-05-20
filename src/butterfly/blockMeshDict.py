@@ -50,7 +50,7 @@ class BlockMeshDict(FoamFile):
         """
         _cls = cls()
 
-        with open(filepah, 'rb') as bf:
+        with open(filepah, 'rt') as bf:
             lines = CppDictParser.remove_comments(bf.read())
             bmd = ' '.join(lines.replace('\r\n', ' ').replace('\n', ' ').split())
 
@@ -58,7 +58,6 @@ class BlockMeshDict(FoamFile):
 
         original_convertToMeters = float(
             bmd.split('convertToMeters')[-1].split(';')[0])
-
         conversion = convertToMeters / original_convertToMeters
 
         # find vertices
@@ -92,7 +91,7 @@ class BlockMeshDict(FoamFile):
             .replace('));', ');').replace('((', ' (').replace(')(', ') (')
 
         _cls.values['boundary'] = {}
-        for key, values in CppDictParser(boundary_string).values.iteritems():
+        for key, values in CppDictParser(boundary_string).values.items():
             if isinstance(values, dict) and 'type' in values and 'faces' in values:
                 values['faces'] = eval(str(values['faces']).replace(' ', ','))
 
@@ -346,7 +345,7 @@ class BlockMeshDict(FoamFile):
         if not self._bf_block_geometries:
             self._bf_block_geometries = tuple(
                 _get_bf_geometry(name, attr)
-                for name, attr in self.boundary.iteritems())
+                for name, attr in self.boundary.items())
 
         return self._bf_block_geometries
 
@@ -686,7 +685,7 @@ class BlockMeshDict(FoamFile):
         else:
             # update boundary condition for the geometry if the boundary is created
             # from geometry
-            for name, v in self.values['boundary'].iteritems():
+            for name, v in self.values['boundary'].items():
                 if ind in v['faces']:
                     v['type'] = 'empty'
 
@@ -733,7 +732,7 @@ class BlockMeshDict(FoamFile):
                if isinstance(attr['faces'][0], tuple) else
                _body % (name, attr['type'],
                         '\n\t' + str(attr['faces']).replace(",", ""))
-               for name, attr in self.boundary.iteritems())
+               for name, attr in self.boundary.items())
 
         return 'boundary\n(%s);\n' % '\n'.join(col)
 
