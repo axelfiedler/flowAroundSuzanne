@@ -6,7 +6,7 @@ from .fields import AtmBoundaryLayerInletVelocity, AtmBoundaryLayerInletK, \
     AtmBoundaryLayerInletEpsilon, Calculated, EpsilonWallFunction, FixedValue, \
     InletOutlet, KqRWallFunction, NutkWallFunction, NutkAtmRoughWallFunction, \
     Slip, ZeroGradient, AlphatJayatillekeWallFunction, FixedFluxPressure, Empty, \
-    Field
+    OmegaWallFunction, Field
 
 
 class BoundaryCondition(object):
@@ -15,7 +15,7 @@ class BoundaryCondition(object):
 
     # TODO(Mostapha): Write a descriptor for each field and replace all properties
     def __init__(self, bc_type='patch', T=None, U=None, p=None, k=None,
-                 epsilon=None, nut=None, alphat=None, p_rgh=None):
+                 epsilon=None, omega=None, nut=None, alphat=None, p_rgh=None):
         """Instantiate boundary condition.
         Attributes:
                 :param bc_type: Boundary condition type. e.g.(patch, wall)
@@ -24,6 +24,7 @@ class BoundaryCondition(object):
                 :param p: OpenFOAM value for p.
                 :param k: OpenFOAM value for k.
                 :param epsilon: OpenFOAM value for epsilon.
+                :param omega: OpenFOAM value for omega.
                 :param nut: OpenFOAM value for nut.
         """
         self.__dict__['is{}'.format(self.__class__.__name__)] = True
@@ -34,6 +35,7 @@ class BoundaryCondition(object):
         self.p = p
         self.k = k
         self.epsilon = epsilon
+        self.omega = omega
         self.nut = nut
         self.alphat = alphat
         self.p_rgh = p_rgh
@@ -82,6 +84,15 @@ class BoundaryCondition(object):
     @epsilon.setter
     def epsilon(self, e):
         self._epsilon = self.try_get_field(e or ZeroGradient())
+
+    @property
+    def omega(self):
+        "omega boundary condition."
+        return self._omega
+
+    @omega.setter
+    def omega(self, o):
+        self._omega = self.try_get_field(o or ZeroGradient())
 
     @property
     def nut(self):
@@ -159,12 +170,13 @@ class BoundingBoxBoundaryCondition(BoundaryCondition):
         p = ZeroGradient()
         k = ZeroGradient()
         epsilon = ZeroGradient()
+        omega = ZeroGradient()
         nut = ZeroGradient()
         T = ZeroGradient()
         alphat = ZeroGradient()
         p_rgh = ZeroGradient()
         super(BoundingBoxBoundaryCondition, self).__init__(
-            'wall', T, U, p, k, epsilon, nut, alphat, p_rgh
+            'wall', T, U, p, k, epsilon, omega, nut, alphat, p_rgh
         )
 
 
@@ -180,12 +192,13 @@ class EmptyBoundaryCondition(BoundaryCondition):
         p = Empty()
         k = Empty()
         epsilon = Empty()
+        omega = Empty()
         nut = Empty()
         T = Empty()
         alphat = Empty()
         p_rgh = Empty()
         super(EmptyBoundaryCondition, self).__init__(
-            'wall', T, U, p, k, epsilon, nut, alphat, p_rgh
+            'wall', T, U, p, k, epsilon, omega, nut, alphat, p_rgh
         )
 
 
@@ -198,16 +211,18 @@ class IndoorWallBoundaryCondition(BoundaryCondition):
         p: OpenFOAM value for p.
         k: OpenFOAM value for k.
         epsilon: OpenFOAM value for epsilon.
+        omega: OpenFOAM value for omega.
         nut: OpenFOAM value for nut.
     """
 
-    def __init__(self, T=None, U=None, p=None, k=None, epsilon=None, nut=None,
-                 alphat=None, p_rgh=None):
+    def __init__(self, T=None, U=None, p=None, k=None, epsilon=None, omega=None,
+                 nut=None, alphat=None, p_rgh=None):
         """Init bounday condition."""
         U = U or FixedValue('(0 0 0)')
         p = p or ZeroGradient()
         k = k or KqRWallFunction('0.1')
         epsilon = epsilon or EpsilonWallFunction(0.01)
+        omega = omega or OmegaWallFunction(1)
         nut = nut or NutkWallFunction(0.01)
         T = T or ZeroGradient()
         alphat = alphat or AlphatJayatillekeWallFunction(
@@ -216,7 +231,7 @@ class IndoorWallBoundaryCondition(BoundaryCondition):
         p_rgh = p_rgh or FixedFluxPressure(value='0', is_uniform=True, rho='rhok')
 
         BoundaryCondition.__init__(self, 'wall', T, U, p,
-                                   k, epsilon, nut, alphat, p_rgh)
+                                   k, epsilon, omega, nut, alphat, p_rgh)
 
 
 class FixedInletBoundaryCondition(BoundaryCondition):
@@ -228,24 +243,26 @@ class FixedInletBoundaryCondition(BoundaryCondition):
         p: OpenFOAM value for p.
         k: OpenFOAM value for k.
         epsilon: OpenFOAM value for epsilon.
+        omega: OpenFOAM value for omega.
         nut: OpenFOAM value for nut.
     """
 
-    def __init__(self, T=None, U=None, p=None, k=None, epsilon=None, nut=None,
-                 alphat=None, p_rgh=None):
+    def __init__(self, T=None, U=None, p=None, k=None, epsilon=None, omega=None,
+                 nut=None, alphat=None, p_rgh=None):
         """Init bounday condition."""
         # set default values for an inlet
         U = U or FixedValue('(0 0 0)')
         p = p or ZeroGradient()
         k = k or FixedValue('0.1')
         epsilon = epsilon or FixedValue('0.01')
+        omega = omega or FixedValue('1')
         nut = Calculated('0')
         T = T if T else None
         alphat = ZeroGradient()
         p_rgh = ZeroGradient()
 
         BoundaryCondition.__init__(self, 'patch', T, U, p,
-                                   k, epsilon, nut, alphat, p_rgh)
+                                   k, epsilon, omega, nut, alphat, p_rgh)
 
     def __repr__(self):
         """Bounday condition representatoin."""
@@ -263,24 +280,26 @@ class FixedOutletBoundaryCondition(BoundaryCondition):
         p: OpenFOAM value for p.
         k: OpenFOAM value for k.
         epsilon: OpenFOAM value for epsilon.
+        omega: OpenFOAM value for omega.
         nut: OpenFOAM value for nut.
     """
 
-    def __init__(self, T=None, U=None, p=None, k=None, epsilon=None, nut=None,
-                 alphat=None, p_rgh=None):
+    def __init__(self, T=None, U=None, p=None, k=None, epsilon=None, omega=None,
+                 nut=None, alphat=None, p_rgh=None):
         """Init bounday condition."""
         # set default values for an inlet
         U = U or InletOutlet(value='uniform (0 0 0)', inletValue='uniform (0 0 0)')
         p = p or FixedValue('0')
         k = k or InletOutlet(value='uniform 0.1', inletValue='uniform 0.1')
         epsilon = epsilon or InletOutlet(value='uniform 0.1', inletValue='uniform 0.1')
+        omega = omega or InletOutlet(value='uniform 1', inletValue='uniform 1')
         nut = Calculated('0')
         T = T or ZeroGradient()
         alphat = alphat or ZeroGradient()
         p_rgh = p_rgh or FixedValue('0')
 
         super(FixedOutletBoundaryCondition, self).__init__(
-            'patch', T, U, p, k, epsilon, nut, alphat, p_rgh
+            'patch', T, U, p, k, epsilon, omega, nut, alphat, p_rgh
         )
 
     def __repr__(self):
@@ -299,6 +318,7 @@ class WindTunnelWallBoundaryCondition(BoundaryCondition):
         p: OpenFOAM value for p.
         k: OpenFOAM value for k.
         epsilon: OpenFOAM value for epsilon.
+        omega: OpenFOAM value for omega.
         nut: OpenFOAM value for nut.
     """
 
@@ -308,10 +328,11 @@ class WindTunnelWallBoundaryCondition(BoundaryCondition):
         p = p or ZeroGradient()
         k = k or KqRWallFunction('$internalField', is_unifrom=False)
         epsilon = epsilon or EpsilonWallFunction('$internalField', is_unifrom=False)
+        omega = omega or ZeroGradient()
         nut = nut or NutkWallFunction('0.0')
         T = T or ZeroGradient()
         super(WindTunnelWallBoundaryCondition, self).__init__(
-            'wall', T, U, p, k, epsilon, nut
+            'wall', T, U, p, k, epsilon, omega, nut
         )
 
 

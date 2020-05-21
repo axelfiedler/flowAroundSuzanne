@@ -355,7 +355,7 @@ class SolutionParameter(object):
             (default: (0, 1.0e+100)).
     """
 
-    _of_filenames = ('epsilon', 'k', 'nut', 'p', 'U', 'T', 'turbulenceProperties',
+    _of_filenames = ('epsilon', 'omega' 'k', 'nut', 'p', 'U', 'T', 'turbulenceProperties',
                      'transportProperties', 'blockMeshDict', 'controlDict',
                      'fvSchemes', 'fvSolution', 'snappyHexMeshDict', 'probes')
 

@@ -15,6 +15,7 @@ from .k import K
 from .p import P
 from .nut import Nut
 from .epsilon import Epsilon
+from .omega import Omega
 from .T import T
 from .alphat import Alphat
 from .p_rgh import P_rgh
@@ -31,13 +32,13 @@ class _Recipe(object):
         fvSolution: Optional input for fvSolution to overwrite default fvSolution.
         fvSchemes: Optional input for fvSchemes to overwrite default fvSchemes.
         quantities: A collection of strings for quantities in this solution.
-            ('U', 'p', 'k', 'epsilon')
+            ('U', 'p', 'k', 'epsilon', 'omega')
         residualControl: A dictionary of values for residualControl of quantities.
         relaxationFactors: A list of values for relaxationFactors of quantities.
     """
 
     __foamfilescollection = {'g': G, 'U': U, 'k': K, 'p': P, 'nut': Nut,
-                             'epsilon': Epsilon, 'T': T, 'alphat': Alphat,
+                             'epsilon': Epsilon, 'omega': Omega, 'T': T, 'alphat': Alphat,
                              'p_rgh': P_rgh,
                              'transportProperties': TransportProperties}
 
@@ -130,7 +131,7 @@ class _Recipe(object):
     def quantities(self, q):
         """List of quantities for the recipe."""
         if not q:
-            q = ('p', 'U', 'k', 'epsilon')
+            q = ('p', 'U', 'k', 'epsilon', 'omega')
         else:
             self.__quantities = q
 
@@ -277,7 +278,7 @@ class _SingleCommandRecipe(_Recipe):
         residualControl: A dictionary of values for residualControl of residuals.
         relaxationFactors: A list of values for relaxationFactors of residuals.
         residual_fields: List of quantities that should be watched during solution
-            run ('Ux', 'Uy', 'Uz', 'p', 'k', 'epsilon').
+            run ('Ux', 'Uy', 'Uz', 'p', 'k', 'epsilon', 'omega').
     """
 
     def __init__(self, command, turbulenceProperties, fvSolution=None,
@@ -347,9 +348,9 @@ class SteadyIncompressible(_SingleCommandRecipe):
 
     __command = 'simpleFoam'
     # foam files in zero folder
-    __quantities = ('epsilon', 'k', 'nut', 'U', 'p')
+    __quantities = ('epsilon', 'omega' 'k', 'nut', 'U', 'p')
     # Values for residual plot.
-    __residual_fields = ('Ux', 'Uy', 'Uz', 'p', 'k', 'epsilon')
+    __residual_fields = ('Ux', 'Uy', 'Uz', 'p', 'k', 'epsilon', 'omega')
 
     def __init__(self, turbulenceProperties=None, fvSolution=None,
                  fvSchemes=None, residualControl=None, relaxationFactors=None):
@@ -380,9 +381,9 @@ class HeatTransfer(_SingleCommandRecipe):
 
     __command = 'buoyantBoussinesqSimpleFoam'
     # foam files in zero folder
-    __quantities = ('alphat', 'epsilon', 'k', 'nut', 'p_rgh', 'T', 'U')
+    __quantities = ('alphat', 'epsilon', 'omega','k', 'nut', 'p_rgh', 'T', 'U')
     # values for residual plot.
-    __residual_fields = ('Ux', 'Uy', 'Uz', 'p_rgh', 'T', 'k', 'epsilon')
+    __residual_fields = ('Ux', 'Uy', 'Uz', 'p_rgh', 'T', 'k', 'epsilon', 'omega')
 
     def __init__(self, turbulenceProperties=None, fvSolution=None,
                  fvSchemes=None, residualControl=None, relaxationFactors=None,

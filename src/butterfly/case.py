@@ -33,6 +33,7 @@ from .k import K
 from .p import P
 from .nut import Nut
 from .epsilon import Epsilon
+from .omega import Omega
 from .T import T
 from .alphat import Alphat
 from .p_rgh import P_rgh
@@ -179,6 +180,7 @@ class Case(object):
                     f = ff.get_boundary_field(geo.name)
                 except AttributeError as e:
                     if not geo.name.endswith('Conditions'):
+                        print('No boundary field '+geo.name+' for foamfile '+ff.name)
                         print(str(e))
                 else:
                     # set boundary condition for the field
@@ -279,6 +281,7 @@ class Case(object):
         p = P.from_bf_geometries(_geometries)
         k = K.from_bf_geometries(_geometries)
         epsilon = Epsilon.from_bf_geometries(_geometries)
+        omega = Omega.from_bf_geometries(_geometries)
         nut = Nut.from_bf_geometries(_geometries)
         t = T.from_bf_geometries(_geometries)
         alphat = Alphat.from_bf_geometries(_geometries)
@@ -291,48 +294,13 @@ class Case(object):
         probes = Probes()
 
         foam_files = (blockMeshDict, snappyHexMeshDict, turbulenceProperties,
-                      transportProperties, g, u, p, k, epsilon, nut, t, alphat,
+                      transportProperties, g, u, p, k, epsilon, omega, nut, t, alphat,
                       p_rgh, fvSchemes, fvSolution, controlDict, probes)
 
         # create case
         _cls = cls(name, foam_files, geometries)
         _cls.__originalName = normname
         return _cls
-
-    @classmethod
-    def from_wind_tunnel(cls, wind_tunnel, make2d_parameters=None):
-        """Create case from wind tunnel."""
-        _case = cls.from_bf_geometries(
-            wind_tunnel.name, wind_tunnel.test_geomtries, wind_tunnel.blockMeshDict,
-            wind_tunnel.meshing_parameters, make2d_parameters)
-
-        initialConditions = InitialConditions(
-            Uref=wind_tunnel.flow_speed, Zref=wind_tunnel.Zref, z0=wind_tunnel.z0)
-
-        abl_conditions = ABLConditions.from_wind_tunnel(wind_tunnel)
-
-        # add initialConditions and ABLConditions to _case
-        _case.add_foam_files((initialConditions, abl_conditions))
-
-        # include condition files in 0 folder files
-        _case.U.update_values({'#include': '"initialConditions"',
-                               'internalField': 'uniform $flowVelocity'},
-                              mute=True)
-        _case.p.update_values({'#include': '"initialConditions"',
-                               'internalField': 'uniform $pressure'},
-                              mute=True)
-        _case.k.update_values({'#include': '"initialConditions"',
-                               'internalField': 'uniform $turbulentKE'},
-                              mute=True)
-        _case.epsilon.update_values({'#include': '"initialConditions"',
-                                     'internalField': 'uniform $turbulentEpsilon'},
-                                    mute=True)
-
-        if wind_tunnel.refinementRegions:
-            for region in wind_tunnel.refinementRegions:
-                _case.add_refinementRegion(region)
-
-        return _case
 
     @property
     def isCase(self):
@@ -853,8 +821,8 @@ class Case(object):
             'turbulenceProperties': TurbulenceProperties,
             'RASProperties': RASProperties,
             'transportProperties': TransportProperties, 'g': G,
-            'U': U, 'k': K, 'p': P, 'nut': Nut, 'epsilon': Epsilon, 'T': T,
-            'alphat': Alphat, 'p_rgh': P_rgh, 'ABLConditions': ABLConditions,
+            'U': U, 'k': K, 'p': P, 'nut': Nut, 'epsilon': Epsilon, 'omega': Omega,
+            'T': T, 'alphat': Alphat, 'p_rgh': P_rgh, 'ABLConditions': ABLConditions,
             'initialConditions': InitialConditions,
             'blockMeshDict': BlockMeshDict, 'snappyHexMeshDict': SnappyHexMeshDict,
             'controlDict': ControlDict, 'fvSchemes': FvSchemes,

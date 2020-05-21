@@ -47,6 +47,14 @@ class FvSolution(FoamFile):
         'nSweeps': '1'
     }
 
+    __default_values['solvers']['omega'] = {
+        'solver': 'smoothSolver',
+        'smoother': 'GaussSeidel',
+        'tolerance': '1e-8',
+        'relTol': '0.1',
+        'nSweeps': '1'
+    }
+
     __default_values['SIMPLE'] = OrderedDict()
     __default_values['SIMPLE']['nNonOrthogonalCorrectors'] = '2'
     __default_values['SIMPLE']['residualControl'] = {}
@@ -56,6 +64,7 @@ class FvSolution(FoamFile):
     __default_values['relaxationFactors']['U'] = '0.7'
     __default_values['relaxationFactors']['k'] = '0.7'
     __default_values['relaxationFactors']['epsilon'] = '0.7'
+    __default_values['relaxationFactors']['omega'] = '0.7'
 
     def __init__(self, values=None):
         """Init class."""

@@ -16,6 +16,7 @@ class FvSchemes(FoamFile):
         'default': 'none',
         'div(phi,U)': 'bounded Gauss linearUpwindV grad(U)',
         'div(phi,epsilon)': 'bounded Gauss linearUpwind grad(epsilon)',
+        'div(phi,omega)': 'bounded Gauss linearUpwind grad(omega)',
         'div(phi,k)': 'bounded Gauss linearUpwind grad(k)'
     }
 
@@ -37,6 +38,7 @@ class FvSchemes(FoamFile):
            '{\n'
            '    default     none;\n'
            '    div(phi,epsilon)       bounded Gauss upwind default;\n'
+           '    div(phi,omega)       bounded Gauss upwind default;\n'
            '    div(phi,U)      bounded Gauss upwind grad(U);\n'
            '    div((nuEff*dev2(T(grad(U)))))   Gauss linear;\n'
            '    div(phi,k)      bounded Gauss upwind grad(k);\n'
@@ -46,6 +48,7 @@ class FvSchemes(FoamFile):
            '{\n'
            '    default     none;\n'
            '    div(phi,epsilon)    bounded Gauss linearUpwind grad(epsilon);\n'
+           '    div(phi,omega)    bounded Gauss linearUpwind grad(omega);\n'
            '    div(phi,U)      bounded Gauss linearUpwind grad(U);\n'
            '    div((nuEff*dev2(T(grad(U)))))       Gauss linear;\n'
            '    div(phi,k)      bounded Gauss linearUpwind grad(k);\n'
@@ -109,7 +112,8 @@ class FvSchemes(FoamFile):
                     'div(phi,omega)': 'bounded Gauss upwind',
                     'div(phi,k)': 'bounded Gauss upwind',
                     'div((nuEff*dev2(T(grad(U)))))': 'Gauss linear',
-                    'div(phi,epsilon)': 'bounded Gauss linearUpwind grad(epsilon)'
+                    'div(phi,epsilon)': 'bounded Gauss linearUpwind grad(epsilon)',
+                    'div(phi,omega)': 'bounded Gauss linearUpwind grad(omega)'
                 },
 
                 'laplacianSchemes': {
@@ -132,7 +136,8 @@ class FvSchemes(FoamFile):
                     'div(phi,omega)': 'bounded Gauss upwind',
                     'div(phi,k)': 'bounded Gauss upwind',
                     'div((nuEff*dev2(T(grad(U)))))': 'Gauss linear',
-                    'div(phi,epsilon)': 'bounded Gauss linearUpwind grad(epsilon)'
+                    'div(phi,epsilon)': 'bounded Gauss linearUpwind grad(epsilon)',
+                    'div(phi,omega)': 'bounded Gauss linearUpwind grad(omega)'
                 },
 
                 'laplacianSchemes': {
@@ -156,7 +161,8 @@ class FvSchemes(FoamFile):
                     'div(phi,omega)': 'bounded Gauss linearUpwind default',
                     'div(phi,k)': 'bounded Gauss linearUpwind default',
                     'div((nuEff*dev2(T(grad(U)))))': 'Gauss linear',
-                    'div(phi,epsilon)': 'bounded Gauss linearUpwind grad(epsilon)'
+                    'div(phi,epsilon)': 'bounded Gauss linearUpwind grad(epsilon)',
+                    'div(phi,omega)': 'bounded Gauss linearUpwind grad(omega)'
                 },
 
                 'laplacianSchemes': {
@@ -179,7 +185,8 @@ class FvSchemes(FoamFile):
                     'div(phi,omega)': 'bounded Gauss linearUpwind default',
                     'div(phi,k)': 'bounded Gauss linearUpwind default',
                     'div((nuEff*dev2(T(grad(U)))))': 'Gauss linear',
-                    'div(phi,epsilon)': 'bounded Gauss linearUpwind grad(epsilon)'
+                    'div(phi,epsilon)': 'bounded Gauss linearUpwind grad(epsilon)',
+                    'div(phi,omega)': 'bounded Gauss linearUpwind grad(omega)'
                 },
 
                 'laplacianSchemes': {
@@ -203,7 +210,8 @@ class FvSchemes(FoamFile):
                     'div(phi,omega)': 'bounded Gauss linearUpwind default',
                     'div(phi,k)': 'bounded Gauss linearUpwind default',
                     'div((nuEff*dev2(T(grad(U)))))': 'Gauss linear',
-                    'div(phi,epsilon)': 'bounded Gauss linearUpwind grad(epsilon)'
+                    'div(phi,epsilon)': 'bounded Gauss linearUpwind grad(epsilon)',
+                    'div(phi,omega)': 'bounded Gauss linearUpwind grad(omega)'
                 },
 
                 'laplacianSchemes': {

@@ -252,7 +252,7 @@ def get_boundary_field_from_geometries(bf_geometries, field='U'):
 
     Args:
         bf_geometries: List of Butterfly geometries.
-        parameter: One of the fileds as a string (U , p, k , epsilon, nut)
+        parameter: One of the fileds as a string (U , p, k , epsilon, omega, nut)
 
     Returns:
         A dictionary of data that can be passed to snappyHexMeshDict.

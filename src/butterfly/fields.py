@@ -366,3 +366,8 @@ class NutkWallFunction(EpsilonWallFunction):
     """NutkWallFunction."""
 
     pass
+
+class OmegaWallFunction(WallFunction):
+    """OmegaWallFunction."""
+
+    pass
