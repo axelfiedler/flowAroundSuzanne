@@ -216,6 +216,9 @@ class _Recipe(object):
         if hasattr(case, 'probes'):
             case.probes.save(case.project_dir)
 
+        if hasattr(case, 'forces'):
+            case.forces.save(case.project_dir)
+
         if hasattr(case, 'ABLConditions'):
             case.ABLConditions.save(case.project_dir, overwrite=overwrite)
 

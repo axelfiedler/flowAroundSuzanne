@@ -112,6 +112,11 @@ class Solution(object):
         return self.__case.probes
 
     @property
+    def forces(self):
+        """Get forces if any."""
+        return self.__case.forces
+
+    @property
     def residual_file(self):
         """Return address of the residual file."""
         return os.path.join(self.case.log_folder, self.recipe.log_file)
@@ -312,6 +317,19 @@ class Solution(object):
         return load_skipped_probes(os.path.join(self.case.log_folder,
                                                 self.recipe.log_file))
 
+    def load_force_values(self, field):
+        """Return OpenFOAM forces results for a given field (e.g. U)."""
+        return self.case.load_force_values(field)
+
+    def load_forces(self, field):
+        """Return OpenFOAM forces location for a given field (e.g. U)."""
+        return self.case.load_forces(field)
+
+    def skipped_forces(self):
+        """Get list of forces that are skipped from the solution."""
+        return load_skipped_forces(os.path.join(self.case.log_folder,
+                                                self.recipe.log_file))
+
     def sample(self, name, points, field, wait=True):
         """Sample the results for a certain field.
 
@@ -357,7 +375,7 @@ class SolutionParameter(object):
 
     _of_filenames = ('epsilon', 'omega' 'k', 'nut', 'p', 'U', 'T', 'turbulenceProperties',
                      'transportProperties', 'blockMeshDict', 'controlDict',
-                     'fvSchemes', 'fvSolution', 'snappyHexMeshDict', 'probes')
+                     'fvSchemes', 'fvSolution', 'snappyHexMeshDict', 'probes', 'forces')
 
     def __init__(self, of_filename, values, replace=False, time_range=None):
         """Create solution parameter."""

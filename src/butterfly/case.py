@@ -46,6 +46,7 @@ from .snappyHexMeshDict import SnappyHexMeshDict
 from .fvSchemes import FvSchemes
 from .fvSolution import FvSolution
 from .functions import Probes
+from .functions import Forces
 from .decomposeParDict import DecomposeParDict
 from .sampleDict import SampleDict
 
@@ -292,6 +293,7 @@ class Case(object):
         fvSolution = FvSolution()
         controlDict = ControlDict()
         probes = Probes()
+        forces = Forces()
 
         foam_files = (blockMeshDict, snappyHexMeshDict, turbulenceProperties,
                       transportProperties, g, u, p, k, epsilon, omega, nut, t, alphat,
@@ -389,6 +391,11 @@ class Case(object):
         return os.path.join(self.postProcessing_folder, 'probes')
 
     @property
+    def forces_folder(self):
+        """Fullpath to forces folder."""
+        return os.path.join(self.postProcessing_folder, 'forces')
+
+    @property
     def foam_files(self):
         """Get all the foam_files."""
         return tuple(f for f in self.__foamfiles)
@@ -420,6 +427,25 @@ class Case(object):
         if self.probes.probes_count > 0:
             # include probes in controlDict
             self.controlDict.include = self.probes.filename
+
+    @property
+    def forces(self):
+        """Get and set Forces."""
+        return self.__forces
+
+    @forces.setter
+    def forces(self, inf):
+        if not inf:
+            return
+
+        assert hasattr(inf, 'patches'), \
+            dir(inf)
+            #"Expected Forces not {}".format(type(inf))
+
+        self.__forces = inf
+        if self.forces.forces_count > 0:
+            # include forces in controlDict
+            self.controlDict.include = self.forces.filename
 
     def get_foam_file_by_name(self, name):
         """Get a foamfile by name."""
@@ -826,7 +852,7 @@ class Case(object):
             'initialConditions': InitialConditions,
             'blockMeshDict': BlockMeshDict, 'snappyHexMeshDict': SnappyHexMeshDict,
             'controlDict': ControlDict, 'fvSchemes': FvSchemes,
-            'fvSolution': FvSolution, 'probes': Probes,
+            'fvSolution': FvSolution, 'probes': Probes, 'forces': Forces,
             'decomposeParDict': DecomposeParDict
         }
 

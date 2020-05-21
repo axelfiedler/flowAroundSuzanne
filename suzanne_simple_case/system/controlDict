@@ -54,31 +54,6 @@ libs
 functions
 {
 
-    #includeFunc residuals
-
-    forces
-    {
-        type            forceCoeffs;
-        libs            ("libforces.so");
-        writeControl    adjustableRunTime;
-        writeInterval   0.01;
-
-        patches
-        (
-            monkey
-        );
-
-        log         true;
-        rho         rhoInf;
-        rhoInf      1;
-        CofR        (0 0 0);
-        liftDir     (0 0 1);
-        dragDir     (0 1 0);
-        pitchAxis   (1 0 0);
-        magUInf     0.627791569087; 
-        lRef        4*0.02562 / 0.804201;
-        Aref        0.02562;
-    }
 }
 
 // ************************************************************************* //
