@@ -5,13 +5,12 @@ Created on Sun Jan 27 15:48:00 2019
 @author: fiedl
 """
 
-import json
 import dash
 import os
 import pandas as pd
-import dash_core_components as dcc
+from dash import dcc
 import plotly.graph_objs as go
-import dash_html_components as html
+from dash import html
 from dash.dependencies import Input, Output
 from textwrap import dedent as d
 import numpy as np
@@ -96,8 +95,6 @@ def getFinalForcesTraces():
         y = y_values,
         mode = 'lines+markers',
         name = forces_case,
-        # Pre-select very first point
-        selectedpoints = [0]
         )
         # Append the lines to the data array and return it to display
         data.append(trace)
@@ -108,7 +105,7 @@ def getConvergenceTraces(case,Re):
     # Loop through the different mesh face numbers and append them to the data
     # array to display them as individual lines.
     for face in forces_dict[case]:
-        if forces_dict[case][face]:
+        if Re in forces_dict[case][face].keys():
             trace = go.Scatter(
                 x = forces_dict[case][face][Re]['Time'],
                 y = forces_dict[case][face][Re][selected_force],
@@ -138,7 +135,7 @@ def getMeshTraces(case,Re):
 def getResidualTraces(case,Re):
     # Return array with residual lines for p, Ux, Uy and Uz
     trace0 = go.Scatter(
-        x = residuals_dict[case][max(final_forces[case].keys())][Re]['Time'],
+        x = residuals_dict[case][max(list(final_forces[case].keys()))][Re]['Time'],
         y = residuals_dict[case][max(final_forces[case].keys())][Re]['p'],
         mode = 'lines',
         name = 'p'
@@ -268,9 +265,13 @@ app.layout = html.Div([
     Output('iterations', 'figure'),
     [Input('overview', 'selectedData')])
 def update_figure(selectedData):
-    selected_Re = selectedData['points'][0]['x']
-    curve_number = selectedData['points'][0]['curveNumber']
-    trace_name = forces_dict.keys()[curve_number]
+    if selectedData:
+        selected_Re = selectedData['points'][0]['x']
+        curve_number = selectedData['points'][0]['curveNumber']
+    else:
+        selected_Re = 100
+        curve_number = 0               
+    trace_name = list(forces_dict.keys())[curve_number]
     return {
         'data': getConvergenceTraces(trace_name,selected_Re),
         'layout': go.Layout(
@@ -295,9 +296,13 @@ def update_figure(selectedData):
     Output('residuals', 'figure'),
     [Input('overview', 'selectedData')])
 def update_figure(selectedData):
-    selected_Re = selectedData['points'][0]['x']
-    curve_number = selectedData['points'][0]['curveNumber']
-    trace_name = forces_dict.keys()[curve_number]
+    if selectedData:
+        selected_Re = selectedData['points'][0]['x']
+        curve_number = selectedData['points'][0]['curveNumber']
+    else:
+        selected_Re = 100
+        curve_number = 0
+    trace_name = list(forces_dict.keys())[curve_number]
     return {
         'data': getResidualTraces(trace_name,selected_Re),
         'layout': go.Layout(
@@ -312,9 +317,13 @@ def update_figure(selectedData):
     Output('mesh', 'figure'),
     [Input('overview', 'selectedData')])
 def update_figure(selectedData):
-    selected_Re = selectedData['points'][0]['x']
-    curve_number = selectedData['points'][0]['curveNumber']
-    trace_name = forces_dict.keys()[curve_number]
+    if selectedData:
+        selected_Re = selectedData['points'][0]['x']
+        curve_number = selectedData['points'][0]['curveNumber']
+    else:
+        selected_Re = 100
+        curve_number = 0        
+    trace_name = list(forces_dict.keys())[curve_number]
     return {
         'data': getMeshTraces(trace_name,selected_Re),
         'layout': go.Layout(
